@@ -1,5 +1,7 @@
 package com.lab6.client;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.Queue;
@@ -10,7 +12,7 @@ public class UserInteraction {
     private final CollectionManagement collectionManagement = new CollectionManagement();
     private final Scanner in = new Scanner(System.in);
 
-    public void start() {
+    public void start(BufferedWriter outputBuffer, BufferedReader inputBuffer) {
 
         Queue<String> historyQueue = new ArrayDeque<>(11);
 
@@ -22,7 +24,7 @@ public class UserInteraction {
         System.out.println("Type in the command:");
         String command = in.nextLine();
         while(!command.equals("exit")) {
-            executeCommand(command, historyQueue);
+            executeCommand(command, historyQueue, outputBuffer, inputBuffer);
             System.out.println("Type in the command:");
             command = in.nextLine();
         }
@@ -31,7 +33,7 @@ public class UserInteraction {
     }
 
 
-    private void executeCommand(String command, Queue<String> historyQueue) {
+    private void executeCommand(String command, Queue<String> historyQueue, BufferedWriter outputBuffer,BufferedReader inputBuffer) {
         switch (command) {
             case "info":
                 historyUpdate(historyQueue, "info");
