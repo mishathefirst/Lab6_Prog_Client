@@ -1,7 +1,7 @@
 package com.lab6.client;
 
 import com.google.gson.Gson;
-import com.lab6.client.entities.CollectionData;
+import com.lab6.client.entities.*;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -52,7 +52,7 @@ public class UserInteraction {
                 break;
             case "add":
                 historyUpdate(historyQueue, "add");
-                printAddCommand();
+                printAddCommand(outputBuffer, inputBuffer);
                 break;
             case "clear":
                 historyUpdate(historyQueue, "clear");
@@ -131,7 +131,7 @@ public class UserInteraction {
     }
 
 
-    private void printAddCommand() {
+    private void printAddCommand(BufferedWriter outputBuffer, BufferedReader inputReader) {
 
         MusicGenre genre;
 
