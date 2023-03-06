@@ -1,16 +1,19 @@
 package com.lab6.client;
 
+import com.google.gson.Gson;
+import com.lab6.client.entities.CollectionData;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.util.ArrayDeque;
-import java.util.HashSet;
-import java.util.Queue;
-import java.util.Scanner;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.*;
 
 public class UserInteraction {
 
     private final CollectionManagement collectionManagement = new CollectionManagement();
     private final Scanner in = new Scanner(System.in);
+    Gson gson = new Gson();
 
     public void start(BufferedWriter outputBuffer, BufferedReader inputBuffer) {
 
@@ -37,7 +40,7 @@ public class UserInteraction {
         switch (command) {
             case "info":
                 historyUpdate(historyQueue, "info");
-                printCollectionInfo(collectionManagement.info());
+                printCollectionInfo(outputBuffer, inputBuffer);
                 break;
             case "show":
                 historyUpdate(historyQueue, "show");
@@ -53,7 +56,7 @@ public class UserInteraction {
                 break;
             case "clear":
                 historyUpdate(historyQueue, "clear");
-                clearCollection();
+                clearCollection(outputBuffer, inputBuffer);
                 break;
             case "execute_script":
                 historyUpdate(historyQueue, "execute_script");
@@ -95,5 +98,74 @@ public class UserInteraction {
             historyQueue.poll();
         }
     }
+
+
+    private void printCollectionInfo(BufferedWriter outputBuffer, BufferedReader inputBuffer) {
+        CollectionData collectionData;
+        try {
+            outputBuffer.write("info");
+            outputBuffer.flush();
+            collectionData = gson.fromJson(inputBuffer.readLine(), CollectionData.class);
+            System.out.println("Collection type: " + collectionData.getType());
+            System.out.println("Collection initialisation date: " + new Date(collectionData.getInitialisationDate()));
+            System.out.println("Collection size: " + collectionData.getSize());
+            System.out.println("Is collection empty: " + collectionData.isEmpty());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void clearCollection(BufferedWriter outputBuffer, BufferedReader inputBuffer) {
+        try {
+            outputBuffer.write("clear");
+            outputBuffer.flush();
+            String serverResponse = inputBuffer.readLine();
+            if (serverResponse.equals("success")) {
+                System.out.println("Collection's been cleared successfully!");
+            } else {
+                System.out.println("Collection hasn't been cleared. Try again later.");
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
+    private void printAddCommand() {
+
+        MusicGenre genre;
+
+        System.out.println("Print the name of the band you would like to add: ");
+        String bandName = in.nextLine();
+        System.out.println("Print the the coordinates of the band in a format {xx,xx.xx}: ");
+        String[] coordinatesString = in.nextLine().split(",");
+        int bandCoordinateX = Integer.parseInt(coordinatesString[0]);
+        double bandCoordinateY = Double.parseDouble(coordinatesString[1]);
+        System.out.println("Type in the number of participants of the band: ");
+        int numberOfParticipants = Integer.parseInt(in.nextLine());
+        System.out.println("Choose the genre of the musical band within ROCK, JAZZ, PUNK-ROCK or skip the question if neither of the answers are appropriate:");
+        String userGenre = in.nextLine();
+        if (userGenre.equals("ROCK")) {
+            genre = MusicGenre.ROCK;
+        } else if (userGenre.equals("JAZZ")) {
+            genre = MusicGenre.JAZZ;
+        } else if (userGenre.equals("PUNK-ROCK")) {
+            genre = MusicGenre.PUNK_ROCK;
+        } else {
+            genre = null;
+        }
+        System.out.println("Type in the name of the studio:");
+        String studioName = in.nextLine();
+
+        collectionManagement.add(new MusicBand(collectionManagement.getCollection().size() + 1, bandName,
+                new Coordinates(bandCoordinateX, bandCoordinateY), LocalDate.now(),
+                numberOfParticipants, genre, new Studio(studioName)));
+
+        System.out.println("Element successfully added!");
+    }
+
+
+
+
 
 }

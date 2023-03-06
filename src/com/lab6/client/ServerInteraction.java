@@ -26,11 +26,6 @@ public class ServerInteraction {
                 userInteraction.start(outputBuffer, inputBuffer);
 
 
-                outputBuffer.write();
-                outputBuffer.flush();
-
-
-
             } finally {
                 socket.close();
                 inputBuffer.close();
