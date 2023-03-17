@@ -44,7 +44,7 @@ public class UserInteraction {
                 break;
             case "show":
                 historyUpdate(historyQueue, "show");
-                System.out.println(collectionManagement.show());
+                //System.out.println(collectionManagement.show());
                 break;
             case "help":
                 historyUpdate(historyQueue, "help");
@@ -62,7 +62,7 @@ public class UserInteraction {
                 historyUpdate(historyQueue, "execute_script");
                 System.out.println("Type in the name of the file with the script:");
                 String scriptFileName = in.nextLine();
-                executeScript(scriptFileName, historyQueue);
+                //executeScript(scriptFileName, historyQueue);
                 break;
             case "history":
                 historyUpdate(historyQueue, "history");
@@ -136,10 +136,9 @@ public class UserInteraction {
         MusicGenre genre;
 
         try {
-            outputBuffer.write("add");
-            outputBuffer.flush();
-            String serverResponse = inputBuffer.readLine();
-            if (serverResponse.equals("adding")) {
+
+
+            //if (serverResponse.equals("adding")) {
 
                 System.out.println("Print the name of the band you would like to add: ");
                 String bandName = in.nextLine();
@@ -163,19 +162,29 @@ public class UserInteraction {
                 System.out.println("Type in the name of the studio:");
                 String studioName = in.nextLine();
 
-                outputBuffer.write(gson.toJson(new MusicBand(collectionManagement.getCollection().size() + 1,
-                        bandName,
-                        new Coordinates(bandCoordinateX, bandCoordinateY), LocalDate.now(),
-                        numberOfParticipants, genre, new Studio(studioName))));
+                String objectToAdd = gson.toJson(new MusicBand(1, bandName, new Coordinates(bandCoordinateX, bandCoordinateY),
+                        LocalDate.now(), numberOfParticipants, genre, new Studio(studioName)));
+
+                //outputBuffer.write(gson.toJson(new MusicBand(collectionManagement.getCollection().size() + 1,
+                        //bandName,
+                        //new Coordinates(bandCoordinateX, bandCoordinateY), LocalDate.now(),
+                        //numberOfParticipants, genre, new Studio(studioName))));
+
+
+                outputBuffer.write("add [" + objectToAdd + "]");
+                outputBuffer.flush();
+                String serverResponse = inputBuffer.readLine();
+
                 String serverResponseAddition = inputBuffer.readLine();
+
                 if (serverResponseAddition.equals("success")) {
                     System.out.println("Element successfully added!");
                 } else {
                     System.out.println("Element hasn't been added. Try again later.");
                 }
-            } else {
-                System.out.println("The command cannot be implemented. Try again later.");
-            }
+            //} else {
+                //System.out.println("The command cannot be implemented. Try again later.");
+            //}
         } catch (IOException ex) {
             ex.printStackTrace();
         }
